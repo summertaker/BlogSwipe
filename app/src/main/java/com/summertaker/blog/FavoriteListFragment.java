@@ -121,6 +121,9 @@ public class FavoriteListFragment extends BaseFragment implements SwipeRefreshLa
         if (BaseApplication.getInstance().isFavoriteChanged()) {
             loadData();
         } else {
+            if (mFavorites == null) {
+                mFavorites = BaseApplication.getInstance().getFavorites();
+            }
             renderData();
         }
     }
@@ -253,22 +256,18 @@ public class FavoriteListFragment extends BaseFragment implements SwipeRefreshLa
     public void onRefresh() {
         //Log.e(mTag, "onRefresh()...");
         //mSwipeRefresh.setRefreshing(false);
-
         loadData();
     }
 
     public void goTop() {
         //Log.e(mTag, "goTop()..." + mPosition);
-
-        //mListView.setSelection(0);
+        mGridView.setSelection(0);
         //mListView.smoothScrollToPosition(0);
         //mListView.setSelectionAfterHeaderView();
     }
 
     public void refresh() {
         //Log.e(mTag, "refresh()..." + mPosition);
-        //mAdapter.notifyDataSetChanged();
-        //mIsRefreshMode = true;
-        //loadData();
+        loadData();
     }
 }

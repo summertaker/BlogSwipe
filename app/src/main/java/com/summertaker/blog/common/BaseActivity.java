@@ -43,6 +43,13 @@ public abstract class BaseActivity extends AppCompatActivity {
                 actionBar.setTitle(title);
             }
         }
+
+        mBaseToolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onToolbarClick();
+            }
+        });
     }
 
     protected void initToolbarProgressBar() {

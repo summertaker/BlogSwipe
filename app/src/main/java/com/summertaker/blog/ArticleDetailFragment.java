@@ -199,10 +199,9 @@ public class ArticleDetailFragment extends BaseFragment {
 
     public void goTop() {
         //Log.e(mTag, "goTop()..." + mPosition);
-
-        //mListView.setSelection(0);
-        //mListView.smoothScrollToPosition(0);
-        //mListView.setSelectionAfterHeaderView();
+        mScrollView.scrollTo(0, 0);
+        //mScrollView.smoothScrollTo(0, 0);
+        //mScrollView.fullScroll(ScrollView.FOCUS_UP);
     }
 
     public void refresh() {

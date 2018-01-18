@@ -28,7 +28,7 @@ public class FavoriteListAdapter extends BaseDataAdapter {
 
     @Override
     public int getCount() {
-        return mMembers.size();
+        return (mMembers == null) ? 0 : mMembers.size();
     }
 
     @Override

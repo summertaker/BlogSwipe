@@ -47,8 +47,9 @@ public class MainActivity extends BaseActivity implements /*NavigationView.OnNav
     private DrawerLayout mDrawer;
     private int mNavItemId = 0;
 
+    private SectionsPagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
-    private int mViewPagerTotal = 3;
+    private int mViewPagerTotal = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,12 @@ public class MainActivity extends BaseActivity implements /*NavigationView.OnNav
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
+        mToolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onToolbarClick();
+            }
+        });
 
         mActionBar = getSupportActionBar();
         if (mActionBar != null) {
@@ -192,6 +199,9 @@ public class MainActivity extends BaseActivity implements /*NavigationView.OnNav
                 Intent groupList = new Intent(mContext, GroupListActivity.class);
                 startActivityForResult(groupList, Config.REQUEST_CODE);
                 return true;
+            case R.id.action_refresh:
+                runFragment("refresh", 0);
+                return true;
             case R.id.action_open_in_new:
                 // 데스크탑용 페이지를 크롤링해 왔기에 모바일 브라우저에서 접속하면 404 발생
                 Member member = BaseApplication.getInstance().getMember();
@@ -240,10 +250,15 @@ public class MainActivity extends BaseActivity implements /*NavigationView.OnNav
         }
     }
 
-    private void init() {
-        SectionsPagerAdapter pagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+    public void onToolbarClick() {
+        //Log.e(mTag, "onToolbarClick()...");
+        runFragment("goTop", mViewPager.getCurrentItem());
+    }
 
-        mViewPager.setAdapter(pagerAdapter);
+    private void init() {
+        mPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+        mViewPager.setAdapter(mPagerAdapter);
         mViewPager.setOffscreenPageLimit(mViewPagerTotal);
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -314,9 +329,22 @@ public class MainActivity extends BaseActivity implements /*NavigationView.OnNav
         // and call some method inside that fragment to reload the data:
         //if (0 == mViewPager.getCurrentItem() && null != f) {
         if (fragment != null) {
-            if (positon == 1) {
+            if (positon == 0) {
+                FavoriteListFragment favoriteListFragment = (FavoriteListFragment) fragment;
+                switch (command) {
+                    case "goTop":
+                        favoriteListFragment.goTop();
+                        break;
+                    case "refresh":
+                        favoriteListFragment.refresh();
+                        break;
+                }
+            } else if (positon == 1) {
                 ArticleListFragment articleListFragment = (ArticleListFragment) fragment;
                 switch (command) {
+                    case "goTop":
+                        articleListFragment.goTop();
+                        break;
                     case "refresh":
                         articleListFragment.refresh();
                         break;
@@ -324,6 +352,9 @@ public class MainActivity extends BaseActivity implements /*NavigationView.OnNav
             } else if (positon == 2) {
                 ArticleDetailFragment articleDetailFragment = (ArticleDetailFragment) fragment;
                 switch (command) {
+                    case "goTop":
+                        articleDetailFragment.goTop();
+                        break;
                     case "refresh":
                         articleDetailFragment.refresh();
                         break;
@@ -347,6 +378,9 @@ public class MainActivity extends BaseActivity implements /*NavigationView.OnNav
         switch (message) {
             case "onFavoriteClick":
                 //mActionBar.setTitle(member.getName());
+                mViewPagerTotal = 2;
+                mPagerAdapter.notifyDataSetChanged();
+
                 mViewPager.setCurrentItem(1);
                 runFragment("refresh", 1);
                 break;
@@ -357,6 +391,9 @@ public class MainActivity extends BaseActivity implements /*NavigationView.OnNav
     public void onArticleListCallback(String message, Article article) {
         switch (message) {
             case "onArticleClick":
+                mViewPagerTotal = 3;
+                mPagerAdapter.notifyDataSetChanged();
+
                 mViewPager.setCurrentItem(2);
                 runFragment("refresh", 2);
                 break;

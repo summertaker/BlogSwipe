@@ -187,8 +187,7 @@ public class ArticleListFragment extends BaseFragment {
 
     public void goTop() {
         //Log.e(mTag, "goTop()..." + mPosition);
-
-        //mListView.setSelection(0);
+        mListView.setSelection(0);
         //mListView.smoothScrollToPosition(0);
         //mListView.setSelectionAfterHeaderView();
     }
