@@ -55,6 +55,7 @@ public class FavoriteListAdapter extends BaseDataAdapter {
             holder = new FavoriteListAdapter.ViewHolder();
             holder.ivThumbnail = view.findViewById(R.id.ivThumbnail);
             holder.tvName = view.findViewById(R.id.tvName);
+            holder.tvNew = view.findViewById(R.id.tvNew);
             //mContext.registerForContextMenu(holder.tvContent);
             view.setTag(holder);
         } else {
@@ -66,12 +67,19 @@ public class FavoriteListAdapter extends BaseDataAdapter {
 
         holder.tvName.setText(member.getName());
 
+        if (member.isUpdated()) {
+            holder.tvNew.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvNew.setVisibility(View.GONE);
+        }
+
         return view;
     }
 
     static class ViewHolder {
         ImageView ivThumbnail;
         TextView tvName;
+        TextView tvNew;
     }
 }
 

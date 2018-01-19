@@ -264,15 +264,16 @@ public class MainActivity extends BaseActivity implements /*NavigationView.OnNav
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+                //Log.e(mTag, "onPageScrolled().position: " + position);
             }
 
             @Override
             public void onPageSelected(int position) {
-                //Log.e(mTag, "position: " + position);
                 if (position == 0) {
+                    //Log.e(mTag, "onPageSelected().position: " + position);
                     mToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
                     mActionBar.setTitle(R.string.app_name);
+                    runFragment("refreshAdapter", 0);
                 } else {
                     mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
                     Member member = BaseApplication.getInstance().getMember();
@@ -286,7 +287,7 @@ public class MainActivity extends BaseActivity implements /*NavigationView.OnNav
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
+                //Log.e(mTag, "onPageScrollStateChanged().state: " + state);
             }
         });
     }
@@ -337,6 +338,9 @@ public class MainActivity extends BaseActivity implements /*NavigationView.OnNav
                         break;
                     case "refresh":
                         favoriteListFragment.refresh();
+                        break;
+                    case "refreshAdapter":
+                        favoriteListFragment.refreshAdapter();
                         break;
                 }
             } else if (positon == 1) {

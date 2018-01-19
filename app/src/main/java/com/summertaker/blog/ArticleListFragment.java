@@ -95,19 +95,10 @@ public class ArticleListFragment extends BaseFragment {
     @Override
     public void onResume() {
         //Log.e(mTag, ">> onResume()...");
-
         super.onResume();
 
-        //--------------------------------------------------------------------------------------------
-        // 앱이 최소화되거나 화면 분할 모드에 진입하면 Activity 의 Adapter 가 null 이 된다.
-        // 앱 화면이 복귀되면 onResume() 이 실행되는데 이 때 데이터를 다시 읽어와 Adapter 를 설정해 준다.
-        // 다시 읽어온 데이터를 Fragment 에도 적용하기 위해 Activity 와 똑같이 onResume() 에서 처리한다.
-        //--------------------------------------------------------------------------------------------
-        //ArrayList<Member> favorites = BaseApplication.getInstance().getFavorites();
-        //mBlogUrl = members.get(mPosition).getBlogUrl();
-        //Log.e(mTag, "onCreateView(): "+ mPosition + " / " + mBlogUrl);
-
-        loadData();
+        // Activity 에서 호출하는 refresh() 함수에서 loadData() 를 실행하니 여기서는 실행하지 않는다.
+        //loadData();
     }
 
     private void loadData() {
@@ -183,6 +174,24 @@ public class ArticleListFragment extends BaseFragment {
     public void renderData() {
         mAdapter = new ArticleListAdapter(mContext, mArticles);
         mListView.setAdapter(mAdapter);
+
+        //--------------------------
+        // 최종 블로그 일자 저장하기
+        //--------------------------
+        if (mArticles.size() > 0) {
+            Article article = mArticles.get(0);
+            ArrayList<Member> favorites = BaseApplication.getInstance().getFavorites();
+
+            for (Member member : favorites) {
+                if (member.getBlogUrl().equals(mMember.getBlogUrl())) {
+                    member.setLastDate(article.getDate());
+                    member.setUpdated(false);
+                    //Log.e(mTag, member.getName() + ".setUpdated(false)");
+                }
+            }
+
+            BaseApplication.getInstance().saveMember(Config.PREFERENCE_KEY_FAVORITES, favorites);
+        }
     }
 
     public void goTop() {
@@ -194,7 +203,6 @@ public class ArticleListFragment extends BaseFragment {
 
     public void refresh() {
         //Log.e(mTag, "refresh()..." + mPosition);
-
         loadData();
     }
 }

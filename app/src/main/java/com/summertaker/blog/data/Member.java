@@ -16,6 +16,7 @@ public class Member implements Serializable {
     private boolean favorite;
     private boolean loading;
     private boolean updated;
+    private String lastDate;
 
     public String getGroupId() {
         return groupId;
@@ -95,5 +96,13 @@ public class Member implements Serializable {
 
     public void setUpdated(boolean updated) {
         this.updated = updated;
+    }
+
+    public String getLastDate() {
+        return lastDate;
+    }
+
+    public void setLastDate(String lastDate) {
+        this.lastDate = lastDate;
     }
 }

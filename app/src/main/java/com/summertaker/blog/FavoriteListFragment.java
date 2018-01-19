@@ -116,14 +116,14 @@ public class FavoriteListFragment extends BaseFragment implements SwipeRefreshLa
 
     @Override
     public void onResume() {
+        //Log.e(mTag, "onResume()...");
         super.onResume();
 
-        if (BaseApplication.getInstance().isFavoriteChanged()) {
+        mFavorites = BaseApplication.getInstance().getFavorites();
+
+        if (mFavorites != null && mFavorites.size() > 0 && BaseApplication.getInstance().isFavoriteChanged()) {
             loadData();
         } else {
-            if (mFavorites == null) {
-                mFavorites = BaseApplication.getInstance().getFavorites();
-            }
             renderData();
         }
     }
@@ -135,9 +135,9 @@ public class FavoriteListFragment extends BaseFragment implements SwipeRefreshLa
         tvLoadingCount.setText("");
         mPbLoadingHorizontal.setProgress(0);
 
-        mFavorites = BaseApplication.getInstance().getFavorites();
-
         for (Member member : mFavorites) {
+            //Log.e(mTag, member.getName() + " " + member.getLastDate());
+            member.setUpdated(false);
             requestData(member.getBlogUrl());
         }
     }
@@ -187,41 +187,38 @@ public class FavoriteListFragment extends BaseFragment implements SwipeRefreshLa
 
             //Log.e(mTag, "articles.size(): " + articles.size());
 
-            /*
-            Member member = null;
-            for (Member m : mFavorites) {
-                if (url.equals(m.getBlogUrl())) {
-                    member = m;
+            Member currentMember = null;
+            for (Member member : mFavorites) {
+                if (url.equals(member.getBlogUrl())) {
+                    currentMember = member;
                     break;
                 }
             }
 
-            if (member != null) {
+            if (currentMember != null) {
                 if (articles.size() > 0) {
-                    Article article = articles.get(0);
-                    Date date = Util.getDate(article.getDate());
-                    //Log.e(mTag, member.getName() + " " + date.toString());
+                    if (currentMember.getLastDate() == null || currentMember.getLastDate().isEmpty()) {
+                        // 마지막 체크 날짜가 없는 경우
+                        currentMember.setUpdated(true);
+                    } else {
+                        Date articleDate = Util.getDate(articles.get(0).getDate());
+                        Date lastDate = Util.getDate(currentMember.getLastDate());
+                        //Log.e(mTag, articleDate.toString() + " " + lastDate.toString());
 
-                    // https://stackoverflow.com/questions/22039991/how-to-compare-two-dates-along-with-time-in-java
-                    int compareTo = date.compareTo(mLastCheckDate);
-                    if (compareTo > 0) {
-                        member.setUpdated(true);
-                    } else if (compareTo < 0) {
-                        member.setUpdated(false);
+                        // https://stackoverflow.com/questions/22039991/how-to-compare-two-dates-along-with-time-in-java
+                        int compareTo = articleDate.compareTo(lastDate);
+                        if (compareTo > 0) {
+                            currentMember.setUpdated(true);
+                        }
                     }
-                } else {
-                    member.setUpdated(false);
                 }
             }
-            */
 
             mLoadCount++;
 
             if (mLoadCount < mFavorites.size()) {
-                //loadData();
                 updateProgress();
             } else {
-                //Collections.sort(mArticles, Collections.reverseOrder());
                 renderData();
             }
         }
@@ -267,7 +264,18 @@ public class FavoriteListFragment extends BaseFragment implements SwipeRefreshLa
     }
 
     public void refresh() {
-        //Log.e(mTag, "refresh()..." + mPosition);
+        //Log.e(mTag, "refresh()... " + mPosition);
         loadData();
+    }
+
+    public void refreshAdapter() {
+        //Log.e(mTag, "refreshAdapter()... " + mPosition);
+        //loadData();
+
+        mFavorites = BaseApplication.getInstance().loadMember(Config.PREFERENCE_KEY_FAVORITES);
+        for (Member member : mFavorites) {
+            Log.e(mTag, member.getName() + " " + member.isUpdated());
+        }
+        mAdapter.notifyDataSetChanged();
     }
 }

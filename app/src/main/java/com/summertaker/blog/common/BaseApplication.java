@@ -169,11 +169,13 @@ public class BaseApplication extends Application {
                         m.setPictureUrl(obj.getString("pictureUrl"));
                         m.setBlogUrl(obj.getString("blogUrl"));
                         m.setFavorite(obj.getBoolean("isFavorite"));
+                        m.setLastDate(obj.getString("lastDate"));
                         members.add(m);
                     }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+                Log.e(mTag, "loadMember().JSONException: " + e.getMessage());
             }
         }
 
@@ -199,6 +201,7 @@ public class BaseApplication extends Application {
                 o.put("pictureUrl", m.getPictureUrl());
                 o.put("blogUrl", m.getBlogUrl());
                 o.put("isFavorite", m.isFavorite());
+                o.put("lastDate", (m.getLastDate() == null) ? "" : m.getLastDate());
                 array.put(o);
 
                 //Log.e("== saveMember()", ">> " + m.getName() + " saved...");
@@ -212,6 +215,7 @@ public class BaseApplication extends Application {
             mSharedEditor.apply();
         } catch (JSONException e) {
             e.printStackTrace();
+            Log.e(mTag, "saveMember().JSONException: " + e.getMessage());
         }
     }
 
