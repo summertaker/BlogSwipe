@@ -27,16 +27,18 @@ public class ArticleListAdapter extends BaseDataAdapter {
     private Context mContext;
     private LayoutInflater mLayoutInflater;
     private ArrayList<Article> mArticles = new ArrayList<>();
+    private ArticleListInterface mCallback;
 
     private LinearLayout.LayoutParams mParams;
     private LinearLayout.LayoutParams mParamsNoMargin;
 
     String mTodayString = "";
 
-    public ArticleListAdapter(Context context, ArrayList<Article> articles) {
+    public ArticleListAdapter(Context context, ArrayList<Article> articles, ArticleListInterface callback) {
         this.mContext = context;
         this.mLayoutInflater = LayoutInflater.from(context);
         this.mArticles = articles;
+        mCallback = callback;
 
         float density = mContext.getResources().getDisplayMetrics().density;
         int height = (int) (272 * density);
@@ -112,6 +114,15 @@ public class ArticleListAdapter extends BaseDataAdapter {
                 //iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 holder.loPicture.addView(iv);
 
+                /*
+                iv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mCallback.onImageClick(article, imageUrl);
+                    }
+                });
+                */
+
                 Picasso.with(mContext).load(imageUrl).placeholder(R.drawable.placeholder).into(iv);
 
                 /*
@@ -150,16 +161,6 @@ public class ArticleListAdapter extends BaseDataAdapter {
 
                     }
                 });*/
-
-                /*
-                final String imageUrl = article.getImageUrls().get(i);
-                iv.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mCallback.onImageClick(position, imageUrl);
-                    }
-                });
-                */
             }
         }
 
@@ -201,7 +202,7 @@ public class ArticleListAdapter extends BaseDataAdapter {
             @Override
             public void onClick(View view) {
                 Member m = mMembers.get(position);
-                mTeamInterface.onPicutreClick(m);
+                mTeamInterface.onImageClick(m);
             }
         });
         */

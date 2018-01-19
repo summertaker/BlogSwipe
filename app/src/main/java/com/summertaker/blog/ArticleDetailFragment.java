@@ -122,6 +122,8 @@ public class ArticleDetailFragment extends BaseFragment {
             mTvYesterday.setVisibility(View.VISIBLE);
         }
 
+        Log.e(mTag, mArticle.getHtml());
+
         // https://medium.com/@rajeefmk/android-textview-and-image-loading-from-url-part-1-a7457846abb6
         Spannable spannable = ImageUtil.getSpannableHtmlWithImageGetter(mContext, mTvContent, mArticle.getHtml());
         mTvContent.setText(spannable);

@@ -154,7 +154,8 @@ public class Nogizaka46Parser extends BaseParser {
             for (Element img : sibling.select("img")) {
                 String src = img.attr("src");
                 //Log.e(mTag, "src: " + src);
-                if (src.contains(".gif")) {
+                if (src.contains(".gif") || src.contains("cid:")) {
+                    html = html.replace(img.outerHtml(), "");
                     continue;
                 }
                 //src = "http://www.keyakizaka46.com" + src;
@@ -183,8 +184,21 @@ public class Nogizaka46Parser extends BaseParser {
             content = builder.toString();
             */
 
+            // 불필요한 태그 제거하기
+            Element con = Jsoup.parse(html);
+            //for (Element e : con.select("blockquote")) {
+            //    html = html.replace(e.outerHtml(), e.html());
+            //}
+            html = html.replace("<blockquote type=\"cite\">", "");
+            html = html.replace("<blockquote>", "");
+            html = html.replace("</blockquote>", "");
+
+            for (Element e : con.select("meta")) {
+                html = html.replace(e.outerHtml(), e.html());
+            }
+
             html = html.replaceAll("&nbsp;", "");
-            html = html.replaceAll("<div> </div>", "<br>");
+            html = html.replaceAll("<div>\\s*</div>", "<br>");
             html = html.replaceAll("<div>([^<|.]*?)</div>", "$1<br>");
 
             /*
@@ -215,8 +229,13 @@ public class Nogizaka46Parser extends BaseParser {
             // https://stackoverflow.com/questions/3261581/how-to-represent-a-fix-number-of-repeats-in-regular-expression
             html = html.replaceAll("(<br>\\s*){3,}", "<br>").trim(); // 반복
 
+            html = html.replaceAll("<div>\\s*<br>", "");
+            html = html.replaceAll("<br>\\s*</div>", "");
+            html = html.replaceAll("<br>\\s*<div>", "<div>");
+            html = html.replaceAll("</div>\\s*<br>", "</div>");
+
             //if (i == 0) {
-            //    Log.e(mTag, ">>>>> AFTER\n" + content);
+            //    Log.e(mTag, ">>>>> AFTER\n" + html);
             //}
 
             //i++;

@@ -382,7 +382,9 @@ public class MainActivity extends BaseActivity implements /*NavigationView.OnNav
         switch (message) {
             case "onFavoriteClick":
                 //mActionBar.setTitle(member.getName());
-                mViewPagerTotal = 2;
+                if (mViewPagerTotal == 1) {
+                    mViewPagerTotal = 2;
+                }
                 mPagerAdapter.notifyDataSetChanged();
 
                 mViewPager.setCurrentItem(1);
@@ -395,7 +397,9 @@ public class MainActivity extends BaseActivity implements /*NavigationView.OnNav
     public void onArticleListCallback(String message, Article article) {
         switch (message) {
             case "onArticleClick":
-                mViewPagerTotal = 3;
+                if (mViewPagerTotal == 2) {
+                    mViewPagerTotal = 3;
+                }
                 mPagerAdapter.notifyDataSetChanged();
 
                 mViewPager.setCurrentItem(2);

@@ -273,9 +273,6 @@ public class FavoriteListFragment extends BaseFragment implements SwipeRefreshLa
         //loadData();
 
         mFavorites = BaseApplication.getInstance().loadMember(Config.PREFERENCE_KEY_FAVORITES);
-        for (Member member : mFavorites) {
-            Log.e(mTag, member.getName() + " " + member.isUpdated());
-        }
         mAdapter.notifyDataSetChanged();
     }
 }

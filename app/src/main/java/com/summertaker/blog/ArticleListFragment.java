@@ -2,6 +2,8 @@ package com.summertaker.blog;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class ArticleListFragment extends BaseFragment {
+public class ArticleListFragment extends BaseFragment implements ArticleListInterface {
 
     private ArticleListFragment.Callback mCallback;
 
@@ -172,7 +174,7 @@ public class ArticleListFragment extends BaseFragment {
     }
 
     public void renderData() {
-        mAdapter = new ArticleListAdapter(mContext, mArticles);
+        mAdapter = new ArticleListAdapter(mContext, mArticles, this);
         mListView.setAdapter(mAdapter);
 
         //--------------------------
@@ -192,6 +194,24 @@ public class ArticleListFragment extends BaseFragment {
 
             BaseApplication.getInstance().saveMember(Config.PREFERENCE_KEY_FAVORITES, favorites);
         }
+    }
+
+    @Override
+    public void onTitleClick(Article article) {
+        BaseApplication.getInstance().setArticle(article);
+        mCallback.onArticleListCallback("onArticleClick", article);
+    }
+
+    @Override
+    public void onContentClick(Article article) {
+        BaseApplication.getInstance().setArticle(article);
+        mCallback.onArticleListCallback("onArticleClick", article);
+    }
+
+    @Override
+    public void onImageClick(Article article, String imageUrl) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(imageUrl));
+        startActivity(intent);
     }
 
     public void goTop() {
